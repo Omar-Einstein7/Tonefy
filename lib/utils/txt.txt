@@ -1,0 +1,274 @@
+StreamBuilder<MediaItem?>(
+    //     stream: songRepository.mediaItem,
+    //     builder: (context, snapshot) {
+    //       final mediaItem = snapshot.data;
+    //       return Scaffold(
+    //           appBar: AppBar(),
+    //           // backgroundColor: kprimarycolor,
+    //           body: Column(children: [
+    //             SizedBox(
+    //               height: height * 0.7,
+    //               child: Stack(
+    //                   alignment: AlignmentDirectional.topCenter,
+    //                   children: [
+    //                     Row(
+    //                       mainAxisAlignment: MainAxisAlignment.center,
+    //                       children: [
+    //                         Container(
+    //                             //margin: const EdgeInsets.only(top: 40),
+    //                             height: height * 0.5,
+    //                             width: width * 0.65,
+    //                             decoration: const BoxDecoration(
+    //                               borderRadius: BorderRadius.only(
+    //                                   bottomLeft: Radius.circular(130),
+    //                                   bottomRight: Radius.circular(130),
+    //                                   topLeft: Radius.circular(40),
+    //                                   topRight: Radius.circular(40)),
+    //                             ),
+    //                             child: QueryArtworkWidget(
+    //                               id: int.parse(mediaItem?.id ?? '0'),
+    //                               type: ArtworkType.AUDIO,
+    //                               artworkQuality: FilterQuality.high,
+    //                               quality: 100,
+    //                               nullArtworkWidget: Container(
+    //                                 width: double.infinity,
+    //                                 decoration: BoxDecoration(
+    //                                   color: Colors.grey.withOpacity(0.1),
+    //                                   borderRadius: BorderRadius.only(
+    //                                     bottomLeft: Radius.circular(130),
+    //                                     bottomRight: Radius.circular(130),
+    //                                     topLeft: Radius.circular(40),
+    //                                     topRight: Radius.circular(40),
+    //                                   ),
+    //                                 ),
+    //                               ),
+    //                               artworkBorder: BorderRadius.only(
+    //                                   bottomLeft: Radius.circular(130),
+    //                                   bottomRight: Radius.circular(130),
+    //                                   topLeft: Radius.circular(40),
+    //                                   topRight: Radius.circular(40)),
+    //                               artworkWidth: double.infinity,
+    //                               artworkHeight:
+    //                                   MediaQuery.of(context).size.width - 64,
+    //                               artworkFit: BoxFit.fill,
+    //                             )),
+    //                       ],
+    //                     ),
+    //                     Positioned(
+    //                       bottom: 140,
+    //                       left: width * 0.115,
+    //                       child: StreamBuilder<Duration>(
+    //                           stream: songRepository.position,
+    //                           builder: (context, snapshot) {
+    //                             final position = snapshot.data ?? Duration.zero;
+    //                             return SleekCircularSlider(
+    //                               appearance: CircularSliderAppearance(
+    //                                   size: width * 0.77,
+    //                                   angleRange: 140,
+    //                                   startAngle: 160,
+    //                                   counterClockwise: true,
+    //                                   customWidths: CustomSliderWidths(
+    //                                     trackWidth: 3,
+    //                                     progressBarWidth: 5,
+    //                                     shadowWidth: 5,
+    //                                     handlerSize: 7,
+    //                                   ),
+    //                                   infoProperties: InfoProperties(
+    //                                       mainLabelStyle: const TextStyle(
+    //                                           color: Colors.transparent)),
+    //                                   customColors: CustomSliderColors(
+    //                                       trackColor: Colors.black,
+    //                                       progressBarColor: Colors.black,
+    //                                       dotColor: Colors.black)),
+    //                               min: 0,
+    //                               max:
+    //                                   _duration?.inMilliseconds.toDouble() ?? 0,
+    //                               initialValue:
+    //                                   position.inMilliseconds.toDouble(),
+    //                               onChange: (value) {
+    //                                 songRepository.seek(
+    //                                     Duration(milliseconds: value.toInt()));
+    //                               },
+    //                             );
+    //                           }),
+    //                     ),
+    //                     Positioned(
+    //                       bottom: 0,
+    //                       child: Column(
+    //                         children: [
+    //                           Text(
+    //                             mediaItem?.title ?? 'Unknown',
+    //                             maxLines: 1,
+    //                             overflow: TextOverflow.ellipsis,
+    //                             style: const TextStyle(
+    //                               fontSize: 20,
+    //                               fontWeight: FontWeight.bold,
+    //                             ),
+    //                           ),
+    //                           Text(
+    //                             mediaItem?.artist ?? 'Unknown',
+    //                             maxLines: 1,
+    //                             overflow: TextOverflow.ellipsis,
+    //                             style: const TextStyle(
+    //                               fontSize: 15,
+    //                               fontWeight: FontWeight.bold,
+    //                             ),
+    //                           ),
+    //                         ],
+    //                       ),
+    //                     ),
+    //                     StreamBuilder<Duration>(
+    //                         stream: songRepository.position,
+    //                         builder: (context, snapshot) {
+    //                           final position = snapshot.data ?? Duration.zero;
+
+    //                           return Positioned(
+    //                             bottom: 70,
+    //                             child: Row(
+    //                               mainAxisAlignment:
+    //                                   MainAxisAlignment.spaceAround,
+    //                               children: [
+    //                                 Text(
+    //                                   position.toHms(),
+    //                                   style: const TextStyle(
+    //                                     fontSize: 15,
+    //                                     fontWeight: FontWeight.bold,
+    //                                   ),
+    //                                 ),
+    //                                 // Text(
+    //                                 //   ":",
+    //                                 //   style: const TextStyle(
+    //                                 //     fontSize: 15,
+    //                                 //     fontWeight: FontWeight.bold,
+    //                                 //   ),
+    //                                 // ),
+    //                                 // Text(
+    //                                 //   _duration?.toHms() ?? '0:00',
+    //                                 //   style: const TextStyle(
+    //                                 //     fontSize: 15,
+    //                                 //     fontWeight: FontWeight.bold,
+    //                                 //   ),
+    //                                 // )
+    //                               ],
+    //                             ),
+    //                           );
+    //                         }),
+    //                   ]),
+    //             ),
+    //             SizedBox(
+    //               height: height * 0.1,
+    //               child: Row(
+    //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    //                 children: [
+    //                   //  shuffle button
+    //                   StreamBuilder<bool>(
+    //                     stream: songRepository.shuffleModeEnabled,
+    //                     builder: (context, snapshot) {
+    //                       return IconButton(
+    //                         onPressed: () async {
+    //                           await songRepository.setShuffleModeEnabled(
+    //                             !(snapshot.data ?? false),
+    //                           );
+    //                         },
+    //                         icon: snapshot.data == false
+    //                             ? const Icon(
+    //                                 Icons.shuffle_rounded,
+    //                                 color: Colors.grey,
+    //                               )
+    //                             : const Icon(Icons.shuffle_rounded),
+    //                         iconSize: 30,
+    //                       );
+    //                     },
+    //                   ),
+    //                   // previous button
+    //                   Container(
+    //                     decoration: BoxDecoration(
+    //                         color: Colors.grey,
+    //                         borderRadius: BorderRadius.circular(50)),
+    //                     child: Row(
+    //                       children: [
+    //                         IconButton(
+    //                           onPressed: () async {
+    //                             await songRepository.seekPrevious();
+    //                           },
+    //                           icon: const Icon(Icons.skip_previous_rounded,
+    //                               color: Colors.black),
+    //                           iconSize: 40,
+    //                         ),
+
+    //                         // play/pause button
+    //                         StreamBuilder<bool>(
+    //                           stream: songRepository.playing,
+    //                           builder: (context, snapshot) {
+    //                             final playing = snapshot.data ?? false;
+    //                             return Container(
+    //                               decoration: BoxDecoration(
+    //                                   color: Colors.white,
+    //                                   borderRadius: BorderRadius.circular(40)),
+    //                               child: IconButton(
+    //                                 onPressed: () async {
+    //                                   if (playing) {
+    //                                     await songRepository.pause();
+    //                                   } else {
+    //                                     await songRepository.play();
+    //                                   }
+    //                                 },
+    //                                 icon: playing
+    //                                     ? const Icon(
+    //                                         Icons.pause_rounded,
+    //                                         color: Colors.black,
+    //                                       )
+    //                                     : const Icon(Icons.play_arrow_rounded,
+    //                                         color: Colors.black),
+    //                                 iconSize: 40,
+    //                               ),
+    //                             );
+    //                           },
+    //                         ),
+
+    //                         // next button
+    //                         IconButton(
+    //                           onPressed: () {
+    //                             songRepository.seekNext();
+    //                           },
+    //                           icon: const Icon(Icons.skip_next_rounded,
+    //                               color: Colors.black),
+    //                           iconSize: 40,
+    //                         ),
+    //                       ],
+    //                     ),
+    //                   ),
+
+    //                   // repeat button
+    //                   StreamBuilder<LoopMode>(
+    //                       stream: songRepository.loopMode,
+    //                       builder: (context, snapshot) {
+    //                         return IconButton(
+    //                           onPressed: () async {
+    //                             if (snapshot.data == LoopMode.off) {
+    //                               await songRepository
+    //                                   .setLoopMode(LoopMode.all);
+    //                             } else if (snapshot.data == LoopMode.all) {
+    //                               await songRepository
+    //                                   .setLoopMode(LoopMode.one);
+    //                             } else {
+    //                               await songRepository
+    //                                   .setLoopMode(LoopMode.off);
+    //                             }
+    //                           },
+    //                           icon: snapshot.data == LoopMode.off
+    //                               ? const Icon(
+    //                                   Icons.repeat_rounded,
+    //                                   color: Colors.grey,
+    //                                 )
+    //                               : snapshot.data == LoopMode.all
+    //                                   ? const Icon(Icons.repeat_rounded)
+    //                                   : const Icon(Icons.repeat_one_rounded),
+    //                           iconSize: 30,
+    //                         );
+    //                       }),
+    //                 ],
+    //               ),
+    //             ),
+    //           ]));
+    //     });
