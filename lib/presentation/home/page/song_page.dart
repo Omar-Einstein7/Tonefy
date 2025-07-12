@@ -20,24 +20,31 @@ class _SongPageState extends State<SongPage> {
   void initState() {
     super.initState();
     _initAudioPlayer();
+    _setAudioSource();
+  }
+
+  Future<void> _setAudioSource() async {
+    try {
+      await _audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(widget.song.uri!)));
+    } catch (e) {
+      // Handle error loading audio source
+      print("Error loading audio source: \$e");
+    }
   }
 
   Future<void> _initAudioPlayer() async {
-    // Listen to player states
     _audioPlayer.playerStateStream.listen((state) {
       setState(() {
         isPlaying = state.playing;
       });
     });
 
-    // Listen to duration changes
     _audioPlayer.durationStream.listen((newDuration) {
       setState(() {
         duration = newDuration ?? Duration.zero;
       });
     });
 
-    // Listen to position changes
     _audioPlayer.positionStream.listen((newPosition) {
       setState(() {
         position = newPosition;
@@ -63,45 +70,43 @@ class _SongPageState extends State<SongPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Album art placeholder
             Container(
               decoration: BoxDecoration(
                 border: Border.all(),
-                borderRadius: BorderRadius.circular(20)
+                borderRadius: BorderRadius.circular(20),
               ),
-              child: QueryArtworkWidget(id: widget.song.id, type:ArtworkType.AUDIO ,
-              size: 400,
-              artworkHeight: 200,
-              artworkWidth: 200,
-              artworkBorder: BorderRadius.circular(20),),
+              child: QueryArtworkWidget(
+                id: widget.song.id,
+                type: ArtworkType.AUDIO,
+                size: 400,
+                artworkHeight: 200,
+                artworkWidth: 200,
+                artworkBorder: BorderRadius.circular(20),
+              ),
             ),
             const SizedBox(height: 32),
-            // Song title
             Text(
-              "${widget.song.title}",
+              widget.song.title,
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 4),
-            // Artist name
-             Text(
-              widget.song.artist!,
-              style: TextStyle(fontSize: 18),
+            Text(
+              widget.song.artist ?? "Unknown Artist",
+              style: const TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 24),
-            // Progress bar
             Slider(
               min: 0,
               max: duration.inSeconds.toDouble(),
-              value: position.inSeconds.toDouble(),
+              value: position.inSeconds.toDouble().clamp(0, duration.inSeconds.toDouble()),
               onChanged: (value) async {
-                final position = Duration(seconds: value.toInt());
-                await _audioPlayer.seek(position);
+                final newPosition = Duration(seconds: value.toInt());
+                await _audioPlayer.seek(newPosition);
               },
             ),
-            // Duration indicators
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
@@ -113,29 +118,24 @@ class _SongPageState extends State<SongPage> {
               ),
             ),
             const SizedBox(height: 24),
-            // Playback controls
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Previous button
                 IconButton(
                   iconSize: 45,
                   onPressed: () {
-                    // Handle previous track
+                    // TODO: Implement previous track functionality
                   },
                   icon: const Icon(Icons.skip_previous_rounded),
                 ),
-                // Rewind button
-                IconButton(
-                  iconSize: 45,
-                  onPressed: () async {
-                    await _audioPlayer.seek(
-                      position - const Duration(seconds: 10),
-                    );
-                  },
-                  icon: const Icon(Icons.replay_10_rounded),
-                ),
-                // Play/Pause button
+                // IconButton(
+                //   iconSize: 45,
+                //   onPressed: () async {
+                //     final newPosition = position - const Duration(seconds: 10);
+                //     await _audioPlayer.seek(newPosition >= Duration.zero ? newPosition : Duration.zero);
+                //   },
+                //   icon: const Icon(Icons.replay_10_rounded),
+                // ),
                 IconButton(
                   iconSize: 65,
                   onPressed: () async {
@@ -149,25 +149,30 @@ class _SongPageState extends State<SongPage> {
                     isPlaying ? Icons.pause_circle_filled_rounded : Icons.play_circle_fill_rounded,
                   ),
                 ),
-                // Forward button
-                IconButton(
-                  iconSize: 45,
-                  onPressed: () async {
-                    await _audioPlayer.seek(
-                      position + const Duration(seconds: 10),
-                    );
-                  },
-                  icon: const Icon(Icons.forward_10_rounded),
-                ),
-                // Next button
+                // IconButton(
+                //   iconSize: 45,
+                //   onPressed: () async {
+                //     final newPosition = position + const Duration(seconds: 10);
+                //     await _audioPlayer.seek(newPosition <= duration ? newPosition : duration);
+                //   },
+                //   icon: const Icon(Icons.forward_10_rounded),
+                // ),
                 IconButton(
                   iconSize: 45,
                   onPressed: () {
-                    // Handle next track
+                    // TODO: Implement next track functionality
                   },
                   icon: const Icon(Icons.skip_next_rounded),
                 ),
               ],
+            ),
+            const SizedBox(height: 24),
+            IconButton(
+              iconSize: 40,
+              onPressed: () {
+                // TODO: Implement favorite functionality
+              },
+              icon: const Icon(Icons.favorite_border),
             ),
           ],
         ),
