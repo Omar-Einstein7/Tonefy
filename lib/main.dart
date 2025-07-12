@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_template/presentation/home/bloc/home_cubit.dart';
+import 'package:Tonefy/presentation/home/bloc/home_cubit.dart';
 
 import 'presentation/home/page/home_page.dart';
 import 'service_locator.dart';

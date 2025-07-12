@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:flutter_template/service_locator.dart';
+import 'package:Tonefy/service_locator.dart';
 
 
 

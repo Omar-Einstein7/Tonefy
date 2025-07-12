@@ -1,4 +1,5 @@
-import 'package:flutter_template/domain/home/repo/song_repo.dart';
+import 'package:Tonefy/domain/home/repo/song_repo.dart';
+
 import 'package:get_it/get_it.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'data/home/repo/song_repository.dart';

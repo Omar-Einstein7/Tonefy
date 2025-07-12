@@ -1,5 +1,5 @@
 // import 'package:dartz/dartz.dart';
-// import 'package:flutter_template/domain/home/repo/song_repo.dart';
+// import 'package:Tonefy/domain/home/repo/song_repo.dart';
 
 // import '../entity/song_entity.dart';
 
@@ -18,9 +18,9 @@
 //   }
 // }
 import 'package:dartz/dartz.dart';
-import 'package:flutter_template/core/usecase/usecase.dart';
-import 'package:flutter_template/domain/home/repo/song_repo.dart';
-import 'package:flutter_template/service_locator.dart';
+import 'package:Tonefy/core/usecase/usecase.dart';
+import 'package:Tonefy/domain/home/repo/song_repo.dart';
+import 'package:Tonefy/service_locator.dart';
 
 class GetSongsUseCase extends Usecase<Either, dynamic> {
  @override

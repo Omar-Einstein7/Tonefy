@@ -1,6 +1,7 @@
+import 'package:Tonefy/domain/home/repo/song_repo.dart';
+import 'package:Tonefy/service_locator.dart';
 import 'package:dartz/dartz.dart';
-import 'package:flutter_template/domain/home/repo/song_repo.dart';
-import 'package:flutter_template/service_locator.dart';
+
 import 'package:on_audio_query/on_audio_query.dart';
 import '../../../domain/home/entity/song_entity.dart';
 

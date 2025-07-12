@@ -1,4 +1,4 @@
-import 'package:flutter_template/domain/home/entity/song_entity.dart';
+import 'package:Tonefy/domain/home/entity/song_entity.dart';
 
 import 'package:dartz/dartz.dart';
 
