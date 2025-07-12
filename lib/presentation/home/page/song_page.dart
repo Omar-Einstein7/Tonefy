@@ -1,3 +1,4 @@
+import 'package:Tonefy/common/navigation/app_navigations.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -71,6 +72,9 @@ class _SongPageState extends State<SongPage> {
               alignment: Alignment.topCenter,
               children: [
                 AppBar(
+                  leading: IconButton(onPressed: (){
+                Navigator.pop(context);
+                  }, icon: Icon(Icons.arrow_back_ios)),
                   actions: [
                     IconButton(
                       onPressed: () {},
@@ -98,13 +102,25 @@ class _SongPageState extends State<SongPage> {
                   child: QueryArtworkWidget(
                     id: widget.song.id,
                     type: ArtworkType.AUDIO,
-                    size: 400,
-                    artworkHeight: 200,
-                    artworkWidth: 400,
+                    nullArtworkWidget: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(200),
+                          bottomRight: Radius.circular(200),
+                        ),
+                      ),
+                      child: Icon(Icons.music_note, size: 100),
+                    ),
                     artworkBorder: BorderRadius.only(
                       bottomLeft: Radius.circular(200),
                       bottomRight: Radius.circular(200),
                     ),
+                    artworkFit: BoxFit.cover,
+                    artworkHeight: double.infinity,
+                    artworkWidth: double.infinity,
+                    keepOldArtwork: true,
+                    quality: 100,
                   ),
                 ),
 
@@ -118,11 +134,11 @@ class _SongPageState extends State<SongPage> {
                       duration.inSeconds.toDouble(),
                     ),
 
-                    onChange: (value) async {
+                    onChangeEnd: (value) async {
                       final newPosition = Duration(seconds: value.toInt());
                       await _audioPlayer.seek(newPosition);
-                    },
-
+                    }
+,
                     appearance: CircularSliderAppearance(
                       size: 360,
                       counterClockwise: true,
@@ -171,6 +187,77 @@ class _SongPageState extends State<SongPage> {
                     ),
                   ),
                   SizedBox(height: 90),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        iconSize: 35,
+                        onPressed: () async {
+                        // Shuffle functionality
+                        if (_audioPlayer.shuffleModeEnabled) {
+                          await _audioPlayer.setShuffleModeEnabled(false);
+                        } else {
+                          await _audioPlayer.setShuffleModeEnabled(true);
+                        }
+                      },
+                      icon: Icon(
+                        _audioPlayer.shuffleModeEnabled ? Icons.shuffle_on : Icons.shuffle,
+                      ),
+                      ),
+                      IconButton(
+                        iconSize: 45,
+                        onPressed: () async {
+                        // Previous track functionality
+                        try {
+                          await _audioPlayer.seekToPrevious();
+                        } catch (_) {
+                          await _audioPlayer.seek(Duration.zero);
+                        }
+                      },
+                      icon: const Icon(Icons.skip_previous_rounded),
+                      ),
+
+                      IconButton(
+                        iconSize: 65,
+                        onPressed: () async {
+                          if (isPlaying) {
+                            await _audioPlayer.pause();
+                          } else {
+                            await _audioPlayer.play();
+                          }
+                        },
+                        icon: Icon(
+                          isPlaying
+                              ? Icons.pause_circle_filled_rounded
+                              : Icons.play_circle_fill_rounded,
+                        ),
+                      ),
+
+                      IconButton(
+                        iconSize: 45,
+                        onPressed: () async {
+                        // Next track functionality
+                        try {
+                          await _audioPlayer.seekToNext();
+                        } catch (_) {
+                          await _audioPlayer.seek(duration);
+                        }
+                      },
+                      icon: const Icon(Icons.skip_next_rounded),
+                      ),
+                      IconButton(
+                        iconSize: 35,
+                        onPressed: () async {
+                          final newPosition =
+                              position + const Duration(seconds: 10);
+                          await _audioPlayer.seek(
+                            newPosition <= duration ? newPosition : duration,
+                          );
+                        },
+                        icon: const Icon(Icons.format_align_left_outlined),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -178,124 +265,5 @@ class _SongPageState extends State<SongPage> {
         ],
       ),
     );
-
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     title: const Text('Now Playing'),
-    //     centerTitle: true,
-    //   ),
-    //   body: Padding(
-    //     padding: const EdgeInsets.all(20),
-    //     child: Column(
-    //       mainAxisAlignment: MainAxisAlignment.center,
-    //       children: [
-    //         Container(
-    //           decoration: BoxDecoration(
-    //             border: Border.all(),
-    //             borderRadius: BorderRadius.circular(20),
-    //           ),
-    //           child: QueryArtworkWidget(
-    //             id: widget.song.id,
-    //             type: ArtworkType.AUDIO,
-    //             size: 400,
-    //             artworkHeight: 200,
-    //             artworkWidth: 200,
-    //             artworkBorder: BorderRadius.circular(20),
-    //           ),
-    //         ),
-    //         const SizedBox(height: 32),
-    //         Text(
-    //           widget.song.title,
-    //           style: const TextStyle(
-    //             fontSize: 24,
-    //             fontWeight: FontWeight.bold,
-    //           ),
-    //         ),
-    //         const SizedBox(height: 4),
-    //         Text(
-    //           widget.song.artist ?? "Unknown Artist",
-    //           style: const TextStyle(fontSize: 18),
-    //         ),
-    //         const SizedBox(height: 24),
-    //         Slider(
-    //           min: 0,
-    //           max: duration.inSeconds.toDouble(),
-    //           value: position.inSeconds.toDouble().clamp(0, duration.inSeconds.toDouble()),
-    //           onChanged: (value) async {
-    //             final newPosition = Duration(seconds: value.toInt());
-    //             await _audioPlayer.seek(newPosition);
-    //           },
-    //         ),
-    //         Padding(
-    //           padding: const EdgeInsets.symmetric(horizontal: 16),
-    //           child: Row(
-    //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //             children: [
-    //               Text(position.toString().split('.').first),
-    //               Text(duration.toString().split('.').first),
-    //             ],
-    //           ),
-    //         ),
-    //         const SizedBox(height: 24),
-    //         Row(
-    //           mainAxisAlignment: MainAxisAlignment.center,
-    //           children: [
-    //             IconButton(
-    //               iconSize: 45,
-    //               onPressed: () {
-    //                 // TODO: Implement previous track functionality
-    //               },
-    //               icon: const Icon(Icons.skip_previous_rounded),
-    //             ),
-    //             // IconButton(
-    //             //   iconSize: 45,
-    //             //   onPressed: () async {
-    //             //     final newPosition = position - const Duration(seconds: 10);
-    //             //     await _audioPlayer.seek(newPosition >= Duration.zero ? newPosition : Duration.zero);
-    //             //   },
-    //             //   icon: const Icon(Icons.replay_10_rounded),
-    //             // ),
-    //             IconButton(
-    //               iconSize: 65,
-    //               onPressed: () async {
-    //                 if (isPlaying) {
-    //                   await _audioPlayer.pause();
-    //                 } else {
-    //                   await _audioPlayer.play();
-    //                 }
-    //               },
-    //               icon: Icon(
-    //                 isPlaying ? Icons.pause_circle_filled_rounded : Icons.play_circle_fill_rounded,
-    //               ),
-    //             ),
-    //             // IconButton(
-    //             //   iconSize: 45,
-    //             //   onPressed: () async {
-    //             //     final newPosition = position + const Duration(seconds: 10);
-    //             //     await _audioPlayer.seek(newPosition <= duration ? newPosition : duration);
-    //             //   },
-    //             //   icon: const Icon(Icons.forward_10_rounded),
-    //             // ),
-    //             IconButton(
-    //               iconSize: 45,
-    //               onPressed: () {
-    //                 // TODO: Implement next track functionality
-    //               },
-    //               icon: const Icon(Icons.skip_next_rounded),
-    //             ),
-    //           ],
-    //         ),
-    //         const SizedBox(height: 24),
-    //         IconButton(
-    //           iconSize: 40,
-    //           onPressed: () {
-    //             // TODO: Implement favorite functionality
-    //           },
-    //           icon: const Icon(Icons.favorite_border),
-    //         ),
-    //       ],
-    //     ),
-    //   ),
-    // );
   }
 }
