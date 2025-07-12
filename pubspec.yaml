@@ -53,6 +53,8 @@ dependencies:
   rxdart: ^0.28.0 # stream
   share_plus: ^10.1.4 # share song
   url_launcher: ^6.3.1 # open url
+  sleek_circular_slider: ^2.1.0
+
 
 
 dev_dependencies:
