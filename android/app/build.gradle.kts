@@ -18,9 +18,9 @@ android {
     kotlinOptions {
          jvmTarget = JavaVersion.VERSION_17.toString()
     }
-     kotlin {
-        jvmToolchain(17)
-    }
+    // kotlin {
+    //    jvmToolchain(17)
+    // }
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
