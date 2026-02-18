@@ -82,8 +82,8 @@ class SongPage extends StatelessWidget {
                     ],
                   ),
                   Container(
-                    width: 220,
-                    height: 380,
+                    width: 250,
+                    height: 390,
                     decoration: BoxDecoration(
                       boxShadow: [
                         BoxShadow(
@@ -101,6 +101,8 @@ class SongPage extends StatelessWidget {
                     child: QueryArtworkWidget(
                       id: state.song.id,
                       type: ArtworkType.AUDIO,
+                      quality: 100,
+                      
                       nullArtworkWidget: Container(
                         decoration: BoxDecoration(
                           color: Colors.grey[800],
@@ -119,11 +121,12 @@ class SongPage extends StatelessWidget {
                         bottomLeft: Radius.circular(200),
                         bottomRight: Radius.circular(200),
                       ),
-                      artworkFit: BoxFit.cover,
+                      artworkFit: BoxFit.fitHeight,
                       artworkHeight: double.infinity,
                       artworkWidth: double.infinity,
                       keepOldArtwork: true,
-                      quality: 100,
+                    
+                      artworkQuality: FilterQuality.high,
                     ),
                   ),
 
@@ -207,7 +210,7 @@ class SongPage extends StatelessWidget {
                           IconButton(
                             iconSize: 45,
                             onPressed: () {
-                              context.read<SongPlayerCubit>().playPrevious();
+                              context.read<SongPlayerCubit>().previousSong();
                             },
                             icon: const Icon(Icons.skip_previous_rounded),
                           ),
@@ -215,7 +218,7 @@ class SongPage extends StatelessWidget {
                           IconButton(
                             iconSize: 65,
                             onPressed: () {
-                              context.read<SongPlayerCubit>().playPause();
+                              context.read<SongPlayerCubit>().togglePlayPause();
                             },
                             icon: Icon(
                               state.isPlaying
@@ -227,7 +230,7 @@ class SongPage extends StatelessWidget {
                           IconButton(
                             iconSize: 45,
                             onPressed: () {
-                              context.read<SongPlayerCubit>().playNext();
+                              context.read<SongPlayerCubit>().nextSong();
                             },
                             icon: const Icon(Icons.skip_next_rounded),
                           ),

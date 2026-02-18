@@ -81,7 +81,19 @@ class SongPlayerCubit extends Cubit<SongPlayerState> {
     }
   }
 
-  Future<void> playPause() async {
+  Future<void> play() async {
+    if (state is SongPlayerLoaded) {
+      await _audioPlayer.play();
+    }
+  }
+
+  Future<void> pause() async {
+    if (state is SongPlayerLoaded) {
+      await _audioPlayer.pause();
+    }
+  }
+
+  Future<void> togglePlayPause() async {
     if (state is! SongPlayerLoaded) return;
 
     final currentState = state as SongPlayerLoaded;
@@ -92,7 +104,7 @@ class SongPlayerCubit extends Cubit<SongPlayerState> {
     }
   }
 
-  Future<void> playNext() async {
+  Future<void> nextSong() async {
     if (_playlist.isEmpty) return;
 
     if (_audioPlayer.shuffleModeEnabled) {
@@ -110,7 +122,7 @@ class SongPlayerCubit extends Cubit<SongPlayerState> {
     );
   }
 
-  Future<void> playPrevious() async {
+  Future<void> previousSong() async {
     if (_playlist.isEmpty) return;
 
     if (_audioPlayer.shuffleModeEnabled) {

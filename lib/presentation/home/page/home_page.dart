@@ -1,4 +1,5 @@
 import 'package:Tonefy/presentation/home/widget/songe_card.dart';
+import 'package:Tonefy/presentation/home/widget/mini_player_widget.dart';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -63,6 +64,9 @@ class HomePage extends StatelessWidget {
                       context.read<HomeCubit>().fetchSongs();
                     },
                     child: ListView.builder(
+                      padding: const EdgeInsets.only(
+                        bottom: 86.0,
+                      ), // Add padding for the mini-player
                       itemCount: songs.length,
                       itemBuilder: (context, index) {
                         final song = songs[index];
@@ -82,6 +86,13 @@ class HomePage extends StatelessWidget {
                 }
               },
             ),
+          ),
+          // Mini Player
+          const Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: MiniPlayerWidget(),
           ),
         ],
       ),
