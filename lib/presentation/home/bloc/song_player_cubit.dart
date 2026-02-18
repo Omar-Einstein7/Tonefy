@@ -19,10 +19,8 @@ class SongPlayerCubit extends Cubit<SongPlayerState> {
 
   void _initAudioPlayer() {
     _playerStateSubscription = _audioPlayer.playerStateStream.listen((state) {
-      if (state is PlayerState) {
-        _updatePlayerState(state.playing);
-      }
-    });
+      _updatePlayerState(state.playing);
+        });
 
     _durationSubscription = _audioPlayer.durationStream.listen((duration) {
       _updateDuration(duration ?? Duration.zero);

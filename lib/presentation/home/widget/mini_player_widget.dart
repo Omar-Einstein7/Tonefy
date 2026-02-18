@@ -3,7 +3,7 @@ import 'package:Tonefy/presentation/home/bloc/song_player_state.dart';
 import 'package:Tonefy/presentation/home/page/song_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:just_audio/just_audio.dart';
+
 import 'package:on_audio_query/on_audio_query.dart';
 
 class MiniPlayerWidget extends StatelessWidget {
