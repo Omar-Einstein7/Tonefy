@@ -1,8 +1,12 @@
 import 'package:Tonefy/presentation/home/page/song_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 import '../../../common/navigation/app_navigations.dart';
+import '../bloc/home_cubit.dart';
+import '../bloc/song_player_cubit.dart';
+import '../bloc/song_player_state.dart';
 
 class SongeCard extends StatelessWidget {
   final SongModel songModel;
@@ -14,18 +18,49 @@ class SongeCard extends StatelessWidget {
     super.key,
     required this.id,
     required this.title,
-    required this.artist, required this.songModel,
+    required this.artist,
+    required this.songModel,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
-        AppNavigator.push(context, SongPage(song: songModel,));
+      onTap: () {
+        final homeState = context.read<HomeCubit>().state;
+        List<SongModel> playlist = [];
+        int index = 0;
+
+        if (homeState is HomeLoaded) {
+          playlist = homeState.songs;
+          index = playlist.indexWhere((element) => element.id == songModel.id);
+        }
+
+        final playerState = context.read<SongPlayerCubit>().state;
+        bool isSameSong = false;
+
+        if (playerState is SongPlayerLoaded &&
+            playerState.song.id == songModel.id) {
+          isSameSong = true;
+        }
+
+        if (!isSameSong) {
+          context.read<SongPlayerCubit>().loadSong(
+            songModel.uri!,
+            songModel,
+            playlist: playlist,
+            index: index,
+          );
+        }
+
+        AppNavigator.push(context, const SongPage());
       },
       child: Card(
-        
-        elevation: 3,
+        color: Colors.white.withOpacity(0.4),
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(color: Colors.white.withOpacity(0.6), width: 1),
+        ),
         margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         child: Container(
           decoration: BoxDecoration(
@@ -40,7 +75,10 @@ class SongeCard extends StatelessWidget {
             ),
           ),
           child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 8,
+            ),
             leading: ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: SizedBox(
@@ -64,10 +102,7 @@ class SongeCard extends StatelessWidget {
             ),
             title: Text(
               title,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),

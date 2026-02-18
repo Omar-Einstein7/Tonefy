@@ -45,7 +45,7 @@ dependencies:
   hive_flutter: ^1.1.0 # local database
   just_audio: ^0.9.46 # audio player
   just_audio_background: ^0.0.1-beta.15 # audio player background
-  lottie: ^3.3.1
+
   marquee: ^2.3.0
   on_audio_query: ^2.9.0 # get songs from device
   package_info_plus: ^8.3.0 # get app info
@@ -80,8 +80,6 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

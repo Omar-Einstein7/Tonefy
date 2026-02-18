@@ -5,6 +5,7 @@ import 'package:on_audio_query/on_audio_query.dart';
 import 'data/home/repo/song_repository.dart';
 import 'domain/home/usecase/get_songs_usecase.dart';
 import 'presentation/home/bloc/home_cubit.dart';
+import 'presentation/home/bloc/song_player_cubit.dart';
 
 final GetIt getIt = GetIt.instance;
 
@@ -13,4 +14,5 @@ void setupServiceLocator() {
   getIt.registerLazySingleton<SongRepository>(() => SongRepositoryImpl());
   getIt.registerLazySingleton<GetSongsUseCase>(() => GetSongsUseCase());
   getIt.registerFactory<HomeCubit>(() => HomeCubit());
+  getIt.registerLazySingleton<SongPlayerCubit>(() => SongPlayerCubit());
 }
