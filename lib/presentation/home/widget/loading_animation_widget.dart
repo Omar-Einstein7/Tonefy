@@ -19,7 +19,7 @@ class _LoadingAnimationWidgetState extends State<LoadingAnimationWidget>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 1),
+      duration: const Duration(milliseconds: 200),
     )..repeat(reverse: true);
     _animation = Tween<double>(begin: 0.5, end: 1.0).animate(_controller);
   }
