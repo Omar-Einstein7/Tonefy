@@ -58,17 +58,22 @@ class HomePage extends StatelessWidget {
                   if (songs.isEmpty) {
                     return const Center(child: Text('No Songs Found'));
                   }
-                  return ListView.builder(
-                    itemCount: songs.length,
-                    itemBuilder: (context, index) {
-                      final song = songs[index];
-                      return SongeCard(
-                        id: song.id,
-                        title: song.title,
-                        artist: song.artist!,
-                        songModel: song,
-                      );
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      context.read<HomeCubit>().fetchSongs();
                     },
+                    child: ListView.builder(
+                      itemCount: songs.length,
+                      itemBuilder: (context, index) {
+                        final song = songs[index];
+                        return SongeCard(
+                          id: song.id,
+                          title: song.title,
+                          artist: song.artist!,
+                          songModel: song,
+                        );
+                      },
+                    ),
                   );
                 } else if (state is HomeError) {
                   return Center(child: Text('Error: \${state.message}'));
