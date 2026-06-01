@@ -2,11 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:Tonefy/presentation/home/bloc/home_cubit.dart';
 import 'package:Tonefy/presentation/home/bloc/song_player_cubit.dart';
+import 'package:Tonefy/presentation/home/bloc/favorite_cubit.dart';
+import 'package:Tonefy/presentation/home/bloc/playlist_cubit.dart';
 
 import 'presentation/home/page/home_page.dart';
 import 'service_locator.dart';
 
-void main() {
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:Tonefy/domain/home/entity/favorite_entity.dart';
+import 'package:just_audio_background/just_audio_background.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await JustAudioBackground.init(
+    androidNotificationChannelId: 'com.ryanheise.audioservice.notifications',
+    androidNotificationChannelName: 'Audio playback',
+    androidNotificationOngoing: true,
+  );
+
+  await Hive.initFlutter();
+  Hive.registerAdapter(FavoriteAdapter());
+  await Hive.openBox<Favorite>('favorites');
+
   setupServiceLocator();
   runApp(MyApp());
 }
@@ -20,6 +38,9 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => getIt<HomeCubit>()..fetchSongs()),
         BlocProvider(create: (context) => getIt<SongPlayerCubit>()),
+        BlocProvider(create: (context) => getIt<FavoriteCubit>()),
+        BlocProvider(create: (context) => getIt<PlaylistCubit>()),
+        // BlocProvider(create: (context) => getIt<RecentCubit>()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

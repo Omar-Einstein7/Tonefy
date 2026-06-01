@@ -1,5 +1,5 @@
 name: Tonefy
-description: "A new Flutter project."
+description: "A sleek and intuitive music player application developed with Flutter, designed to deliver a seamless audio experience for local music files using just_audio and on_audio_query."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -54,12 +54,15 @@ dependencies:
   share_plus: ^10.1.4 # share song
   url_launcher: ^6.3.1 # open url
   sleek_circular_slider: ^2.1.0
+  device_info_plus: ^10.0.0 # For checking Android version
 
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  hive_generator: ^2.0.1
+  build_runner: ^2.4.11
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

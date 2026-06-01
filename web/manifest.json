@@ -1,11 +1,11 @@
 {
-    "name": "flutter_template",
-    "short_name": "flutter_template",
+    "name": "Tonefy",
+    "short_name": "Tonefy",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "A sleek and intuitive music player application developed with Flutter, designed to deliver a seamless audio experience for local music files using just_audio and on_audio_query.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

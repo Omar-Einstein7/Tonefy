@@ -1,4 +1,3 @@
-
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,6 +6,8 @@ import 'package:on_audio_query/on_audio_query.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 import '../bloc/song_player_cubit.dart';
 import '../bloc/song_player_state.dart';
+import '../bloc/favorite_cubit.dart';
+import '../bloc/playlist_cubit.dart';
 import '../widget/loading_animation_widget.dart';
 
 class SongPage extends StatelessWidget {
@@ -35,6 +36,37 @@ class SongPage extends StatelessWidget {
   }
 
   Widget _buildPlayerUI(BuildContext context, SongPlayerLoaded state) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final albumArtSize = screenWidth * 0.65;
+    final sliderSize = screenWidth * 0.8;
+    final borderRadius = albumArtSize / 2;
+
+    // Responsive button sizes
+    final smallButtonSize = screenWidth * 0.12; // Approx 55px on a 450px screen
+    final mediumButtonSize =
+        screenWidth * 0.15; // Approx 65px on a 450px screen
+    final largeButtonSize = screenWidth * 0.18; // Approx 80px on a 450px screen
+
+    // Responsive icon sizes
+    final smallIconSize = smallButtonSize * 0.55; // Approx 30px
+    final mediumIconSize = mediumButtonSize * 0.6; // Approx 40px
+    final largeIconSize = largeButtonSize * 0.625; // Approx 50px
+
+    // Responsive AppBar icon sizes
+    final appBarButtonSize = screenWidth * 0.1; // Approx 40px on a 450px screen
+    final appBarIconSize = appBarButtonSize * 0.6; // Approx 24px
+
+    final leadingAppBarButtonSize =
+        screenWidth * 0.08; // Slightly smaller than appBarButtonSize
+    final leadingAppBarIconSize =
+        leadingAppBarButtonSize * 0.6; // Proportionate icon size
+
+    final actionsAppBarButtonSize =
+        screenWidth * 0.08; // Slightly smaller than appBarButtonSize
+    final actionsAppBarIconSize =
+        actionsAppBarButtonSize * 0.6; // Proportionate icon size
+
     return Stack(
       children: [
         // Background Image
@@ -67,23 +99,115 @@ class SongPage extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.topCenter,
                 children: [
-                  AppBar(
-                    leading: IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: Icon(Icons.arrow_back_ios),
-                    ),
-                    actions: [
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.short_text_outlined),
+                  SafeArea(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: screenWidth * 0.02,
                       ),
-                    ],
+                      child: AppBar(
+                        backgroundColor: Colors.transparent,
+                        elevation: 0,
+                        centerTitle: true,
+                        toolbarHeight:
+                            appBarButtonSize * 1.2, // Make AppBar more compact
+                        leading: IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+                        ),
+                        title: Text(
+                          state.song.title,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          overflow: TextOverflow
+                              .ellipsis, // Add ellipsis for overflow
+                        ),
+                      actions: [
+                        FutureBuilder<bool>(
+                          future: context
+                              .read<FavoriteCubit>()
+                              .isFavorite(state.song.id.toString()),
+                          builder: (context, snapshot) {
+                            final isFav = snapshot.data ?? false;
+                            return IconButton(
+                              iconSize: actionsAppBarIconSize,
+                              onPressed: () {
+                                if (isFav) {
+                                  context
+                                      .read<FavoriteCubit>()
+                                      .removeFavorite(state.song.id.toString());
+                                } else {
+                                  context
+                                      .read<FavoriteCubit>()
+                                      .addFavorite(state.song);
+                                }
+                              },
+                              icon: Icon(
+                                isFav ? Icons.favorite : Icons.favorite_border,
+                                color: Colors.white,
+                              ),
+                            );
+                          },
+                        ),
+                          // BlocBuilder<PlaylistCubit, PlaylistState>(
+                          //   builder: (context, playlistState) {
+                          //     if (playlistState is PlaylistLoaded) {
+                          //       final playlists = playlistState.playlists;
+                          //       return PopupMenuButton<Playlist>(
+                          //         icon: Icon(
+                          //           Icons.playlist_add,
+                          //           color: Colors.white,
+                          //         ),
+                          //         onSelected: (playlist) {
+                          //           context
+                          //               .read<PlaylistCubit>()
+                          //               .addSongToPlaylist(
+                          //                 playlist,
+                          //                 state.song,
+                          //               );
+                          //           ScaffoldMessenger.of(context).showSnackBar(
+                          //             SnackBar(
+                          //               content: Text(
+                          //                 'Added to ${playlist.name}',
+                          //               ),
+                          //               duration: Duration(seconds: 1),
+                          //             ),
+                          //           );
+                          //         },
+                          //         itemBuilder: (context) {
+                          //           if (playlists.isEmpty) {
+                          //             return [
+                          //               const PopupMenuItem(
+                          //                 enabled: false,
+                          //                 child: Text('No Playlists'),
+                          //               ),
+                          //             ];
+                          //           }
+                          //           return playlists
+                          //               .map(
+                          //                 (playlist) => PopupMenuItem<Playlist>(
+                          //                   value: playlist,
+                          //                   child: Text(playlist.name),
+                          //                 ),
+                          //               )
+                          //               .toList();
+                          //         },
+                          //       );
+                          //     }
+                          //     return const SizedBox.shrink();
+                          //   },
+                          // ),
+                        ],
+                      ),
+                    ),
                   ),
                   Container(
-                    width: 250,
-                    height: 390,
+                    width: albumArtSize,
+                    height: albumArtSize * 1.5, // Maintain aspect ratio
                     decoration: BoxDecoration(
                       boxShadow: [
                         BoxShadow(
@@ -94,21 +218,21 @@ class SongPage extends StatelessWidget {
                         ),
                       ],
                       borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(200),
-                        bottomRight: Radius.circular(200),
+                        bottomLeft: Radius.circular(borderRadius),
+                        bottomRight: Radius.circular(borderRadius),
                       ),
                     ),
                     child: QueryArtworkWidget(
                       id: state.song.id,
                       type: ArtworkType.AUDIO,
                       quality: 100,
-                      
+
                       nullArtworkWidget: Container(
                         decoration: BoxDecoration(
                           color: Colors.grey[800],
                           borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(200),
-                            bottomRight: Radius.circular(200),
+                            bottomLeft: Radius.circular(borderRadius),
+                            bottomRight: Radius.circular(borderRadius),
                           ),
                         ),
                         child: Icon(
@@ -118,14 +242,14 @@ class SongPage extends StatelessWidget {
                         ),
                       ),
                       artworkBorder: BorderRadius.only(
-                        bottomLeft: Radius.circular(200),
-                        bottomRight: Radius.circular(200),
+                        bottomLeft: Radius.circular(borderRadius),
+                        bottomRight: Radius.circular(borderRadius),
                       ),
-                      artworkFit: BoxFit.fitHeight,
+                      artworkFit: BoxFit.cover,
                       artworkHeight: double.infinity,
                       artworkWidth: double.infinity,
                       keepOldArtwork: true,
-                    
+
                       artworkQuality: FilterQuality.high,
                     ),
                   ),
@@ -144,7 +268,7 @@ class SongPage extends StatelessWidget {
                         context.read<SongPlayerCubit>().seek(newPosition);
                       },
                       appearance: CircularSliderAppearance(
-                        size: 360,
+                        size: sliderSize,
                         counterClockwise: true,
                         startAngle: 150,
                         angleRange: 120,
@@ -190,67 +314,127 @@ class SongPage extends StatelessWidget {
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    SizedBox(height: 90),
+                    SizedBox(height: screenHeight * 0.08), // Responsive spacing
                     IconTheme(
                       data: IconThemeData(color: Colors.white),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          IconButton(
-                            iconSize: 35,
-                            onPressed: () {
-                              context.read<SongPlayerCubit>().toggleShuffle();
-                            },
-                            icon: Icon(
-                              state.shuffleModeEnabled
-                                  ? Icons.shuffle_on
-                                  : Icons.shuffle,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                              height: smallButtonSize,
+                              width: smallButtonSize,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(
+                                  smallButtonSize / 2,
+                                ),
+                              ),
+                              child: IconButton(
+                                iconSize: smallIconSize,
+                                onPressed: () {
+                                  context
+                                      .read<SongPlayerCubit>()
+                                      .toggleShuffle();
+                                },
+                                icon: Icon(
+                                  state.shuffleModeEnabled
+                                      ? Icons.shuffle_on
+                                      : Icons.shuffle,
+                                ),
+                              ),
                             ),
-                          ),
-                          IconButton(
-                            iconSize: 45,
-                            onPressed: () {
-                              context.read<SongPlayerCubit>().previousSong();
-                            },
-                            icon: const Icon(Icons.skip_previous_rounded),
-                          ),
+                            Container(
+                              height: mediumButtonSize,
+                              width: mediumButtonSize,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(
+                                  mediumButtonSize / 3,
+                                ),
+                              ),
+                              child: IconButton(
+                                iconSize: mediumIconSize,
+                                onPressed: () {
+                                  context
+                                      .read<SongPlayerCubit>()
+                                      .previousSong();
+                                },
+                                icon: const Icon(Icons.skip_previous_rounded),
+                              ),
+                            ),
 
-                          IconButton(
-                            iconSize: 65,
-                            onPressed: () {
-                              context.read<SongPlayerCubit>().togglePlayPause();
-                            },
-                            icon: Icon(
-                              state.isPlaying
-                                  ? Icons.pause_circle_filled_rounded
-                                  : Icons.play_circle_fill_rounded,
+                            Container(
+                              height: largeButtonSize,
+                              width: largeButtonSize,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(
+                                  largeButtonSize / 2,
+                                ),
+                              ),
+                              child: IconButton(
+                                iconSize:
+                                    largeIconSize, // Adjusted size for prominence
+                                onPressed: () {
+                                  context
+                                      .read<SongPlayerCubit>()
+                                      .togglePlayPause();
+                                },
+                                icon: Icon(
+                                  state.isPlaying
+                                      ? Icons.pause_circle_filled_rounded
+                                      : Icons.play_circle_fill_rounded,
+                                ),
+                              ),
                             ),
-                          ),
 
-                          IconButton(
-                            iconSize: 45,
-                            onPressed: () {
-                              context.read<SongPlayerCubit>().nextSong();
-                            },
-                            icon: const Icon(Icons.skip_next_rounded),
-                          ),
-                          IconButton(
-                            iconSize: 35,
-                            onPressed: () {
-                              context.read<SongPlayerCubit>().toggleLoop();
-                            },
-                            icon: Icon(
-                              state.loopMode == LoopMode.one
-                                  ? Icons.repeat_one_rounded
-                                  : (state.loopMode == LoopMode.all
-                                        ? Icons.repeat_rounded
-                                        : Icons.repeat_rounded),
-                              color: state.loopMode == LoopMode.off
-                                  ? Colors.white54
-                                  : Colors.purpleAccent,
+                            Container(
+                              height: mediumButtonSize,
+                              width: mediumButtonSize,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(
+                                  smallButtonSize / 2,
+                                ),
+                              ),
+                              child: IconButton(
+                                iconSize: mediumIconSize,
+                                onPressed: () {
+                                  context.read<SongPlayerCubit>().nextSong();
+                                },
+                                icon: const Icon(Icons.skip_next_rounded),
+                              ),
                             ),
-                          ),
-                        ],
+                            Container(
+                              height: smallButtonSize,
+                              width: smallButtonSize,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(
+                                  smallButtonSize / 2,
+                                ),
+                              ),
+                              child: IconButton(
+                                iconSize: smallIconSize,
+                                onPressed: () {
+                                  context.read<SongPlayerCubit>().toggleLoop();
+                                },
+                                icon: Icon(
+                                  state.loopMode == LoopMode.one
+                                      ? Icons.repeat_one_rounded
+                                      : (state.loopMode == LoopMode.all
+                                            ? Icons.repeat_rounded
+                                            : Icons.repeat_rounded),
+                                  color: state.loopMode == LoopMode.off
+                                      ? Colors.white54
+                                      : Colors.purpleAccent,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],

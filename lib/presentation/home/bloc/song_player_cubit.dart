@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'song_player_state.dart';
 
 class SongPlayerCubit extends Cubit<SongPlayerState> {
@@ -20,7 +21,10 @@ class SongPlayerCubit extends Cubit<SongPlayerState> {
   void _initAudioPlayer() {
     _playerStateSubscription = _audioPlayer.playerStateStream.listen((state) {
       _updatePlayerState(state.playing);
-        });
+      if (state.processingState == ProcessingState.completed) {
+        nextSong();
+      }
+    });
 
     _durationSubscription = _audioPlayer.durationStream.listen((duration) {
       _updateDuration(duration ?? Duration.zero);
@@ -60,7 +64,17 @@ class SongPlayerCubit extends Cubit<SongPlayerState> {
       _currentIndex = index;
 
       await _audioPlayer.stop();
-      await _audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(uri)));
+      await _audioPlayer.setAudioSource(
+        AudioSource.uri(
+          Uri.parse(uri),
+          tag: MediaItem(
+            id: song.id.toString(),
+            album: song.album ?? "Unknown Album",
+            title: song.title,
+            artist: song.artist ?? "Unknown Artist",
+          ),
+        ),
+      );
 
       emit(
         SongPlayerLoaded(
