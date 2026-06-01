@@ -59,11 +59,25 @@ class SongPlayerCubit extends Cubit<SongPlayerState> {
     List<SongModel> playlist = const [],
     int index = 0,
   }) async {
+    // 1. Emit metadata immediately so the UI (SongPage) can render art/title/artist instantly
+    emit(
+      SongPlayerLoaded(
+        song: song,
+        position: Duration.zero,
+        duration: Duration.zero, // Temporary
+        isPlaying: false,
+        shuffleModeEnabled: _audioPlayer.shuffleModeEnabled,
+        loopMode: _audioPlayer.loopMode,
+      ),
+    );
+
     try {
       _playlist = playlist;
       _currentIndex = index;
 
       await _audioPlayer.stop();
+
+      // 2. Start loading the source (this might take 1-3 seconds)
       await _audioPlayer.setAudioSource(
         AudioSource.uri(
           Uri.parse(uri),
@@ -76,20 +90,19 @@ class SongPlayerCubit extends Cubit<SongPlayerState> {
         ),
       );
 
-      emit(
-        SongPlayerLoaded(
-          song: song,
-          position: Duration.zero,
-          duration: _audioPlayer.duration ?? Duration.zero,
-          isPlaying: false,
-          shuffleModeEnabled: _audioPlayer.shuffleModeEnabled,
-          loopMode: _audioPlayer.loopMode,
-        ),
-      );
+      // 3. Update the state with the actual duration once ready
+      if (state is SongPlayerLoaded) {
+        emit(
+          (state as SongPlayerLoaded).copyWith(
+            duration: _audioPlayer.duration ?? Duration.zero,
+            isPlaying: true, // Auto-play
+          ),
+        );
+      }
 
       await _audioPlayer.play();
     } catch (e) {
-      emit(SongPlayerError('Failed to load song: e'));
+      emit(SongPlayerError('Failed to load song: $e'));
     }
   }
 

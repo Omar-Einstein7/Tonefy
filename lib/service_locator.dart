@@ -1,3 +1,4 @@
+import 'package:Tonefy/core/service/artwork_cache_service.dart';
 import 'package:Tonefy/domain/home/repo/song_repo.dart';
 
 import 'package:get_it/get_it.dart';
@@ -15,17 +16,19 @@ import 'package:hive/hive.dart';
 
 final GetIt getIt = GetIt.instance;
 
-
 void setupServiceLocator() {
+  getIt.registerLazySingleton<ArtworkCacheService>(() => ArtworkCacheService());
   getIt.registerLazySingleton<OnAudioQuery>(() => OnAudioQuery());
   getIt.registerLazySingleton<SongRepository>(() => SongRepositoryImpl());
   getIt.registerLazySingleton<GetSongsUseCase>(() => GetSongsUseCase());
   getIt.registerFactory<HomeCubit>(() => HomeCubit());
   getIt.registerLazySingleton<SongPlayerCubit>(() => SongPlayerCubit());
   getIt.registerLazySingleton<FavoriteRepository>(
-      () => FavoriteRepositoryImpl(Hive.box<Favorite>('favorites')));
+    () => FavoriteRepositoryImpl(Hive.box<Favorite>('favorites')),
+  );
   getIt.registerLazySingleton<FavoriteCubit>(
-      () => FavoriteCubit(getIt<FavoriteRepository>()));
+    () => FavoriteCubit(getIt<FavoriteRepository>()),
+  );
   getIt.registerLazySingleton<PlaylistCubit>(() => PlaylistCubit());
   // getIt.registerLazySingleton<RecentCubit>(
   //   () => RecentCubit(getIt<SongPlayerCubit>()),

@@ -1,4 +1,5 @@
 import 'package:Tonefy/presentation/home/page/song_page.dart';
+import 'package:Tonefy/presentation/home/widget/cached_artwork_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -118,22 +119,11 @@ class _SongCardState extends State<SongCard>
                   child: SizedBox(
                     width: 50,
                     height: 50,
-                    child: QueryArtworkWidget(
+                    child: CachedArtworkWidget(
                       id: widget.song.id,
-                      keepOldArtwork: true,
-                      type: ArtworkType.AUDIO,
-                      nullArtworkWidget: Container(
-                        decoration: BoxDecoration(
-                          color: Theme.of(
-                            context,
-                          ).primaryColor.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Icon(
-                          Icons.music_note,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
+                      width: 50,
+                      height: 50,
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
                 ),

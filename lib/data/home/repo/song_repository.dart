@@ -5,38 +5,35 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 
-
 class SongRepositoryImpl implements SongRepository {
+  bool? _isPermissionGranted;
+  int? _sdkInt;
+
   @override
   Future<Either<Exception, List<SongModel>>> fetchSongs() async {
     try {
-      bool permissionGranted = false;
-      final deviceInfo = DeviceInfoPlugin();
-      final androidInfo = await deviceInfo.androidInfo;
-      final sdkInt = androidInfo.version.sdkInt;
+      if (_isPermissionGranted != true) {
+        final deviceInfo = DeviceInfoPlugin();
+        final androidInfo = await deviceInfo.androidInfo;
+        _sdkInt = androidInfo.version.sdkInt;
 
-      if (sdkInt >= 33) {
-        // Android 13 (API 33) or above
-        var audioStatus = await Permission.audio.status;
-        if (!audioStatus.isGranted) {
-          audioStatus = await Permission.audio.request();
-        }
-        if (audioStatus.isGranted) {
-          permissionGranted = true;
-        }
-      } else {
-        // Android 12 (API 32) or below
-        var storageStatus = await Permission.storage.status;
-        if (!storageStatus.isGranted) {
-          storageStatus = await Permission.storage.request();
-        }
-        if (storageStatus.isGranted) {
-          permissionGranted = true;
+        if (_sdkInt! >= 33) {
+          var audioStatus = await Permission.audio.status;
+          if (!audioStatus.isGranted) {
+            audioStatus = await Permission.audio.request();
+          }
+          _isPermissionGranted = audioStatus.isGranted;
+        } else {
+          var storageStatus = await Permission.storage.status;
+          if (!storageStatus.isGranted) {
+            storageStatus = await Permission.storage.request();
+          }
+          _isPermissionGranted = storageStatus.isGranted;
         }
       }
 
-      if (!permissionGranted) {
-         return Left(Exception('Permission denied'));
+      if (_isPermissionGranted != true) {
+        return Left(Exception('Permission denied'));
       }
 
       final songs = await getIt<OnAudioQuery>().querySongs(
@@ -46,7 +43,9 @@ class SongRepositoryImpl implements SongRepository {
         ignoreCase: true,
       );
 
-      final filteredSongs = songs.where((song) => song.title.isNotEmpty).toList();
+      final filteredSongs = songs
+          .where((song) => song.title.isNotEmpty)
+          .toList();
 
       return Right(filteredSongs);
     } catch (e) {

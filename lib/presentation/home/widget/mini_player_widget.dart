@@ -1,6 +1,7 @@
 import 'package:Tonefy/presentation/home/bloc/song_player_cubit.dart';
 import 'package:Tonefy/presentation/home/bloc/song_player_state.dart';
 import 'package:Tonefy/presentation/home/page/song_page.dart';
+import 'package:Tonefy/presentation/home/widget/cached_artwork_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,9 +18,9 @@ class MiniPlayerWidget extends StatelessWidget {
           return GestureDetector(
             onTap: () {
               // Navigate to the full song page
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => const SongPage(),
-              ));
+              Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (context) => const SongPage()));
             },
             child: Container(
               height: 70,
@@ -39,18 +40,14 @@ class MiniPlayerWidget extends StatelessWidget {
               child: Row(
                 children: [
                   Container(
-                   child:  QueryArtworkWidget(
+                    child: CachedArtworkWidget(
                       id: state.song.id,
-                      type: ArtworkType.AUDIO,
-                   
-                    
-                      artworkFit: BoxFit.cover,
-                      artworkQuality: FilterQuality.high,
-                      keepOldArtwork: true,
-                      quality: 100,
+                      width: 50,
+                      height: 50,
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                 
+
                   const SizedBox(width: 16),
                   Expanded(
                     child: Column(
