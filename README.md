@@ -24,7 +24,7 @@
 ## 📸 Screenshots
 
 <p align="center">
-  <img src="assets/Screenshot 2026-02-28 044938.png" width="22%" alt="Home Screen" />
+  <img src="assets/Screenshot 2026-02-28 044938.png" width="42%" alt="Home Screen" />
   <img src="screenshots/player.png" width="22%" alt="Player View" />
   <img src="screenshots/playlist.png" width="22%" alt="Library" />
   <img src="screenshots/settings.png" width="22%" alt="Settings" />
